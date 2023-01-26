@@ -1,0 +1,17 @@
+[package]
+name = "derive-stable-id"
+version = "0.1.0"
+edition = "2021"
+license = "MIT / Apache-2.0"
+homepage = "https://github.com/achankf/stable-id"
+description = "This crate contains all traits that are required for the stable-id crate."
+
+
+[lib]
+proc-macro = true
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+quote = "1.0.23"
+syn = "1.0.107"
