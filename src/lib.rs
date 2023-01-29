@@ -42,7 +42,7 @@ pub fn derive_answer_fn(input: TokenStream) -> TokenStream {
         impl stable_id_traits::Predecessor for #name {
             fn prev_value(self) -> Self {
                 let Self(value) = self;
-                assert!(value != stable_id_traits::Zero::zero());
+                assert!(value != Default::default());
                 Self(value.prev_value())
             }
         }
@@ -62,12 +62,6 @@ pub fn derive_answer_fn(input: TokenStream) -> TokenStream {
 
             fn cast_to(self) -> usize {
                 self.0 as usize
-            }
-        }
-
-        impl stable_id_traits::Zero for #name {
-            fn zero() -> Self {
-                Self(#id_data_type::zero())
             }
         }
 
