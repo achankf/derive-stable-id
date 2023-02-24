@@ -7,7 +7,7 @@ use syn::{parse_macro_input, DeriveInput};
 Derives all traits introduced by the `stable-id-traits` crate.
 The struct should be a tuple which contains an unsigned numeric primitive type.
 */
-pub fn derive_answer_fn(input: TokenStream) -> TokenStream {
+pub fn derive_stable_id(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
 
     let name = &input.ident;
@@ -33,16 +33,16 @@ pub fn derive_answer_fn(input: TokenStream) -> TokenStream {
     quote! {
         impl stable_id_traits::Successor for #name {
             fn next_value(self) -> Self {
+                assert!(self != stable_id_traits::Maximum::max_value());
                 let Self(value) = self;
-                assert!(value != stable_id_traits::Maximum::max_value());
                 Self(value.next_value())
             }
         }
 
         impl stable_id_traits::Predecessor for #name {
             fn prev_value(self) -> Self {
+                assert!(self != Default::default());
                 let Self(value) = self;
-                assert!(value != Default::default());
                 Self(value.prev_value())
             }
         }
