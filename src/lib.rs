@@ -31,6 +31,12 @@ pub fn derive_stable_id(input: TokenStream) -> TokenStream {
     .clone();
 
     quote! {
+        impl Default for #name {
+            fn default() -> Self {
+                Self(Default::default())
+            }
+        }
+
         impl stable_id_traits::Successor for #name {
             fn next_value(self) -> Self {
                 assert!(self != stable_id_traits::Maximum::max_value());
@@ -68,6 +74,50 @@ pub fn derive_stable_id(input: TokenStream) -> TokenStream {
         impl stable_id_traits::Inner<#id_data_type> for #name {
             fn project(self) -> #id_data_type {
                 self.0
+            }
+        }
+
+        impl PartialEq for #name {
+            fn eq(&self, other: &Self) -> bool {
+                use stable_id_traits::Inner;
+                self.project().eq(&other.project())
+            }
+        }
+
+        impl std::cmp::Eq for #name {
+            fn assert_receiver_is_total_eq(&self) {
+                use stable_id_traits::Inner;
+                self.project().assert_receiver_is_total_eq();
+            }
+        }
+
+        impl PartialOrd for #name {
+            fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+                use stable_id_traits::Inner;
+                self.project().partial_cmp(&other.project())
+            }
+        }
+
+        impl Ord for #name {
+            fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+                use stable_id_traits::Inner;
+                self.project().cmp(&other.project())
+            }
+        }
+
+        impl Clone for #name {
+            fn clone(&self) -> Self {
+                use stable_id_traits::Inner;
+                Self(self.project())
+            }
+        }
+
+        impl Copy for #name {}
+
+        impl std::hash::Hash for #name {
+            fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+                use stable_id_traits::Inner;
+                self.project().hash(state);
             }
         }
     }
